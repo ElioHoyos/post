@@ -139,6 +139,12 @@ if($_SESSION["perfil"] == "Especial"){
 
                         <i class="fa fa-print"></i>
 
+                      </button>
+
+                      <button class="btn btn-light btnImprimirBoleta" codigoVenta="'.$value["codigo"].'">
+
+                        <i class="fa fa-print" style="color:red"></i>
+
                       </button>';
 
                       if($_SESSION["perfil"] == "Administrador"){

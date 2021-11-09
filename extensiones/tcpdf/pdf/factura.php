@@ -63,11 +63,11 @@ $bloque1 = <<<EOF
 		
 		<tr>
 			
-			<td style="width:150px"><img src="images/logo-negro-bloque.png"></td>
+			<td style="width:150px"><img src="images/puntos_de_venta.jpg"></td>
 
-			<td style="background-color:white; width:140px">
+			<td style="background-color:white; width:100px">
 				
-				<div style="font-size:8.5px; text-align:right; line-height:15px;">
+				<div style="font-size:8.5px; text-align:left; line-height:15px;">
 					
 					<br>
 					NIT: 71.759.963-9

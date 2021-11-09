@@ -776,6 +776,15 @@ $(".tablas").on("click", ".btnImprimirFactura", function(){
 
 })
 
+// IMPRIMIR BOLETA
+$(".tablas").on("click", ".btnImprimirBoleta", function(){
+
+	var codigoVenta = $(this).attr("codigoVenta");
+
+	window.open("extensiones/tcpdf/pdf/boleta.php?codigo="+codigoVenta, "_blank");
+
+})
+
 /*=============================================
 RANGO DE FECHAS
 =============================================*/

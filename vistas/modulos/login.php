@@ -16,14 +16,14 @@
 
       <div class="form-group has-feedback">
 
-        <input type="text" class="form-control" placeholder="Usuario" name="ingUsuario" required>
+        <input type="text" class="form-control" placeholder="Usuario" name="ingUsuario" required autocomplete="off">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
 
       </div>
 
       <div class="form-group has-feedback">
 
-        <input type="password" class="form-control" placeholder="Contraseña" name="ingPassword" required>
+        <input type="password" class="form-control" placeholder="Contraseña" name="ingPassword" required autocomplete="off">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       
       </div>

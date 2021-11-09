@@ -1,0 +1,1 @@
+<h1>Reporte de Boleta</h1>
