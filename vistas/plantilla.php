@@ -16,7 +16,7 @@ session_start();
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-  <link rel="icon" href="vistas/img/plantilla/icono-negro.png">
+  <link rel="icon" href="vistas/img/plantilla/logo.png">
 
    <!--=====================================
   PLUGINS DE CSS
@@ -37,6 +37,9 @@ session_start();
   <!-- AdminLTE Skins -->
   <link rel="stylesheet" href="vistas/dist/css/skins/_all-skins.min.css">
 
+  <!-- switch -->
+  <link rel="stylesheet" href="vistas/dist/css/switch.css">
+
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -52,6 +55,8 @@ session_start();
 
   <!-- Morris chart -->
   <link rel="stylesheet" href="vistas/bower_components/morris.js/morris.css">
+
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
   <!--=====================================
   PLUGINS DE JAVASCRIPT
@@ -101,6 +106,8 @@ session_start();
 
   <!-- ChartJS http://www.chartjs.org/-->
   <script src="vistas/bower_components/Chart.js/Chart.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 
@@ -185,6 +192,13 @@ CUERPO DOCUMENTO
 <script src="vistas/js/clientes.js"></script>
 <script src="vistas/js/ventas.js"></script>
 <script src="vistas/js/reportes.js"></script>
+<script src="vistas/js/validar_numero.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('.Select-cliente').select2();
+  });
+</script>
 
 </body>
 </html>

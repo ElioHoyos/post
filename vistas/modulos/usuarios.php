@@ -177,7 +177,7 @@ MODAL AGREGAR USUARIO
               
                 <span class="input-group-addon"><i class="fa fa-user"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevoNombre" placeholder="Ingresar nombre" required>
+                <input type="text" class="form-control input-lg" name="nuevoNombre" placeholder="Ingresar nombre" required autocomplete="off">
 
               </div>
 
@@ -191,7 +191,7 @@ MODAL AGREGAR USUARIO
               
                 <span class="input-group-addon"><i class="fa fa-key"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar usuario" id="nuevoUsuario" required>
+                <input type="text" class="form-control input-lg" name="nuevoUsuario" onkeyup="limpiarNumero(this)" pattern="[0-9]" placeholder="Ingresar usuario (DNI)" id="nuevoUsuario" required autocomplete="off">
 
               </div>
 
@@ -205,7 +205,7 @@ MODAL AGREGAR USUARIO
               
                 <span class="input-group-addon"><i class="fa fa-lock"></i></span> 
 
-                <input type="password" class="form-control input-lg" name="nuevoPassword" placeholder="Ingresar contraseña" required>
+                <input type="password" class="form-control input-lg" name="nuevoPassword" onkeyup="limpiarNumero(this)" placeholder="Ingresar contraseña (DNI)" required autocomplete="off">
 
               </div>
 
@@ -219,7 +219,7 @@ MODAL AGREGAR USUARIO
               
                 <span class="input-group-addon"><i class="fa fa-users"></i></span> 
 
-                <select class="form-control input-lg" name="nuevoPerfil">
+                <select class="form-control input-lg" name="nuevoPerfil" required>
                   
                   <option value="">Selecionar perfil</option>
 

@@ -80,6 +80,17 @@ class TablaProductos{
 
   			}
 
+			// ACTIVAR Y DESACTIVAR PRODUCTOS
+			if($productos[$i]["stock"] <= 10){
+
+				$estado = "<label class='switch'><input type='checkbox'><span class='slider'></span></label>";
+
+			}else{
+
+				$estado = "<label class='switch'><input type='checkbox'><span class='slider round'></span></label>";
+
+			}
+
 		 
 		  	$datosJson .='[
 			      "'.($i+1).'",
@@ -90,6 +101,7 @@ class TablaProductos{
 			      "'.$stock.'",
 			      "'.$productos[$i]["precio_compra"].'",
 			      "'.$productos[$i]["precio_venta"].'",
+				  "'.$estado.'",
 			      "'.$productos[$i]["fecha"].'",
 			      "'.$botones.'"
 			    ],';

@@ -63,6 +63,7 @@ if($_SESSION["perfil"] == "Vendedor"){
            <th>Stock</th>
            <th>Precio de compra</th>
            <th>Precio de venta</th>
+           <th>Estado</th>
            <th>Agregado</th>
            <th>Acciones</th>
            
@@ -169,7 +170,7 @@ MODAL AGREGAR PRODUCTO
               
                 <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevaDescripcion" placeholder="Ingresar descripción" required>
+                <input type="text" class="form-control input-lg" name="nuevaDescripcion" placeholder="Ingresar descripción" required autocomplete="off">
 
               </div>
 
@@ -184,6 +185,19 @@ MODAL AGREGAR PRODUCTO
                 <span class="input-group-addon"><i class="fa fa-check"></i></span> 
 
                 <input type="number" class="form-control input-lg" name="nuevoStock" min="0" placeholder="Stock" required>
+
+              </div>
+
+            </div>
+
+            <!-- PRECIO VENTA X MAYOR -->
+            <div class="form-group">
+              
+              <div class="input-group">
+              
+                <span class="input-group-addon"><i class="fa fa-archive"></i></span> 
+
+                <input type="number" class="form-control input-lg" name="" min="0" placeholder="Precio x Mayor" required>
 
               </div>
 

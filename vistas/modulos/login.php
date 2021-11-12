@@ -4,7 +4,7 @@
   
   <div class="login-logo">
 
-    <img src="vistas/img/plantilla/logo-blanco-bloque.png" class="img-responsive" style="padding:30px 100px 0px 100px">
+    <img src="vistas/img/plantilla/repatidor.png" class="img-responsive" style="padding:30px 100px 0px 100px">
 
   </div>
 
@@ -16,14 +16,14 @@
 
       <div class="form-group has-feedback">
 
-        <input type="text" class="form-control" placeholder="Usuario" name="ingUsuario" required autocomplete="off">
+        <input type="text" class="form-control" onkeyup="limpiarNumero(this)" placeholder="Usuario (DNI)" name="ingUsuario" required autocomplete="off">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
 
       </div>
 
       <div class="form-group has-feedback">
 
-        <input type="password" class="form-control" placeholder="Contraseña" name="ingPassword" required autocomplete="off">
+        <input type="password" class="form-control" onkeyup="limpiarNumero(this)" placeholder="Contraseña (DNI)" name="ingPassword" required autocomplete="off">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       
       </div>

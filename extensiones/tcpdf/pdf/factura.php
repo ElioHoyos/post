@@ -57,54 +57,6 @@ $pdf->AddPage();
 
 // ---------------------------------------------------------
 
-$bloque1 = <<<EOF
-
-	<table>
-		
-		<tr>
-			
-			<td style="width:150px"><img src="images/puntos_de_venta.jpg"></td>
-
-			<td style="background-color:white; width:100px">
-				
-				<div style="font-size:8.5px; text-align:left; line-height:15px;">
-					
-					<br>
-					NIT: 71.759.963-9
-
-					<br>
-					Dirección: Calle 44B 92-11
-
-				</div>
-
-			</td>
-
-			<td style="background-color:white; width:140px">
-
-				<div style="font-size:8.5px; text-align:right; line-height:15px;">
-					
-					<br>
-					Teléfono: 300 786 52 49
-					
-					<br>
-					ventas@inventorysystem.com
-
-				</div>
-				
-			</td>
-
-			<td style="background-color:white; width:110px; text-align:center; color:red"><br><br>FACTURA N.<br>$valorVenta</td>
-
-		</tr>
-
-	</table>
-
-EOF;
-
-$pdf->writeHTML($bloque1, false, false, false, false, '');
-
-// ---------------------------------------------------------
-
 $bloque2 = <<<EOF
 
 	<table>
@@ -123,13 +75,20 @@ $bloque2 = <<<EOF
 		
 			<td style="border: 1px solid #666; background-color:white; width:390px">
 
-				Cliente: $respuestaCliente[nombre]
+				NEGOCIOS MULTIPLES AE
+				<br>
+				ESPIRITU ARANDA ABDIAS ABILES
+				<br>
+				AV. TUPAC AMARU MZA. N LOTE. 2 A.H. PRIMAVERA II ETAPA
+				<br>
+				MANANTAY - CORONEL PORTILLO - UCAYALI
 
 			</td>
-
+			
 			<td style="border: 1px solid #666; background-color:white; width:150px; text-align:right">
 			
-				Fecha: $fecha
+				FACTURA ELECTRONICA RUC: 10764367362
+				N° $valorVenta
 
 			</td>
 
@@ -292,7 +251,7 @@ $pdf->writeHTML($bloque5, false, false, false, false, '');
 // ---------------------------------------------------------
 //SALIDA DEL ARCHIVO 
 
-$pdf->Output('factura.pdf', 'D');
+$pdf->Output('factura.pdf');
 
 }
 

@@ -41,6 +41,36 @@
 				
 			<ul class="nav navbar-nav">
 				
+ 				<!-- Notifications: style can be found in dropdown.less -->
+				 <li class="dropdown notifications-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-bell-o"></i>
+              <span class="label label-warning">2</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="header">Tienes 2 notificaciones</li>
+              <li>
+                <!-- inner menu: contains the actual data -->
+                <ul class="menu">
+                  
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-warning text-yellow"></i> Camara de seguridad
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-warning text-yellow"></i> Mascarilla KN 95
+                    </a>
+                  </li>
+                 
+                </ul>
+              </li>
+              <li class="footer"><a href="#">Ver todas las alertas</a></li>
+            </ul>
+          </li>
+          <!-- Tasks: style can be found in dropdown.less -->
+
 				<li class="dropdown user user-menu">
 					
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">

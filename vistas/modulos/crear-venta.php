@@ -128,7 +128,7 @@ if($_SESSION["perfil"] == "Especial"){
                     
                     <span class="input-group-addon"><i class="fa fa-users"></i></span>
                     
-                    <select class="form-control" id="seleccionarCliente" name="seleccionarCliente" required>
+                    <select class="form-control Select-cliente" id="seleccionarCliente" name="seleccionarCliente" required autocomplete="off">
 
                     <option value="">Seleccionar cliente</option>
 
@@ -392,7 +392,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-key"></i></span> 
 
-                <input type="number" min="0" class="form-control input-sm" name="nuevoDocumentoId" placeholder="Ingresar documento" required>
+                <input type="text" onkeyup="limpiarNumero(this)" class="form-control input-sm" name="nuevoDocumentoId" placeholder="Ingresar documento" required autocomplete="off">
 
               </div>
 
@@ -434,7 +434,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
 
-                <input type="text" class="form-control input-sm" name="nuevoTelefono" placeholder="Ingresar teléfono" data-inputmask="'mask':'(99) 999-999-999'" data-mask required autocomplete="off">
+                <input type="text" class="form-control input-sm" name="nuevoTelefono" placeholder="Ingresar teléfono" data-inputmask="'mask':'(999) 999-999'" data-mask required autocomplete="off">
 
               </div>
 

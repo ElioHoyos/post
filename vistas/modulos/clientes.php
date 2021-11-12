@@ -180,7 +180,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-user"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevoCliente" placeholder="Ingresar nombre" required>
+                <input type="text" class="form-control input-sm" name="nuevoCliente" placeholder="Ingresar nombre" required autocomplete="off">
 
               </div>
 
@@ -194,7 +194,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-key"></i></span> 
 
-                <input type="number" min="0" class="form-control input-lg" name="nuevoDocumentoId" placeholder="Ingresar documento" required>
+                <input type="text"  onkeyup="limpiarNumero(this)" class="form-control input-sm" name="nuevoDocumentoId" placeholder="Ingresar documento" required autocomplete="off">
 
               </div>
 
@@ -208,7 +208,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span> 
 
-                <input type="email" class="form-control input-lg" name="nuevoEmail" placeholder="Ingresar email" required>
+                <input type="email" class="form-control input-sm" name="nuevoEmail" placeholder="Ingresar email" required autocomplete="off">
 
               </div>
 
@@ -222,7 +222,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevoTelefono" placeholder="Ingresar teléfono" data-inputmask="'mask':'(999) 999-9999'" data-mask required>
+                <input type="text" class="form-control input-sm" name="nuevoTelefono" placeholder="Ingresar teléfono" data-inputmask="'mask':'(999) 999-999'" data-mask required>
 
               </div>
 
@@ -236,7 +236,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-map-marker"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevaDireccion" placeholder="Ingresar dirección" required>
+                <input type="text" class="form-control input-sm" name="nuevaDireccion" placeholder="Ingresar dirección" required autocomplete="off">
 
               </div>
 
@@ -250,7 +250,7 @@ MODAL AGREGAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="nuevaFechaNacimiento" placeholder="Ingresar fecha nacimiento" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask required>
+                <input type="text" class="form-control input-sm" name="nuevaFechaNacimiento" placeholder="Ingresar fecha nacimiento" data-inputmask="'alias': 'yyyy/mm/dd'" data-mask required>
 
               </div>
 
@@ -327,7 +327,7 @@ MODAL EDITAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-user"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="editarCliente" id="editarCliente" required>
+                <input type="text" class="form-control input-sm" name="editarCliente" id="editarCliente" required>
                 <input type="hidden" id="idCliente" name="idCliente">
               </div>
 
@@ -341,7 +341,7 @@ MODAL EDITAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-key"></i></span> 
 
-                <input type="number" min="0" class="form-control input-lg" name="editarDocumentoId" id="editarDocumentoId" required>
+                <input type="number" min="0" class="form-control input-sm" name="editarDocumentoId" id="editarDocumentoId" required>
 
               </div>
 
@@ -355,7 +355,7 @@ MODAL EDITAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span> 
 
-                <input type="email" class="form-control input-lg" name="editarEmail" id="editarEmail" required>
+                <input type="email" class="form-control input-sm" name="editarEmail" id="editarEmail" required>
 
               </div>
 
@@ -369,7 +369,7 @@ MODAL EDITAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="editarTelefono" id="editarTelefono" data-inputmask="'mask':'(999) 999-9999'" data-mask required>
+                <input type="text" class="form-control input-sm" name="editarTelefono" id="editarTelefono" data-inputmask="'mask':'(999) 999-999'" data-mask required>
 
               </div>
 
@@ -383,7 +383,7 @@ MODAL EDITAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-map-marker"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="editarDireccion" id="editarDireccion"  required>
+                <input type="text" class="form-control input-sm" name="editarDireccion" id="editarDireccion"  required>
 
               </div>
 
@@ -397,7 +397,7 @@ MODAL EDITAR CLIENTE
               
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
 
-                <input type="text" class="form-control input-lg" name="editarFechaNacimiento" id="editarFechaNacimiento"  data-inputmask="'alias': 'yyyy/mm/dd'" data-mask required>
+                <input type="text" class="form-control input-sm" name="editarFechaNacimiento" id="editarFechaNacimiento"  data-inputmask="'alias': 'yyyy/mm/dd'" data-mask required>
 
               </div>
 
