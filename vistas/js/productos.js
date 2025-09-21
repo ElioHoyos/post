@@ -89,6 +89,57 @@ $("#nuevaCategoria").change(function(){
 })
 
 /*=============================================
+ACTIVAR / DESACTIVAR PRODUCTO
+0 = Activo, 1 = Inactivo
+=============================================*/
+/*=============================================
+  ACTIVAR / DESACTIVAR PRODUCTO
+  - Calcula el NUEVO estado y lo envía al backend
+=============================================*/
+$(".tablaProductos tbody").on("click", "button.btnActivar", function () {
+  const btn = $(this);
+  const idProducto = btn.attr("idProducto");
+  const estadoActual = parseInt(btn.attr("estadoProducto"), 10); // 0 o 1
+  const nuevoEstado = (estadoActual === 1) ? 0 : 1; // toggle
+
+  const datos = new FormData();
+  datos.append("activarProducto", idProducto);
+  datos.append("estadoProducto", nuevoEstado);
+
+  $.ajax({
+    url: "ajax/productos.ajax.php",
+    method: "POST",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (resp) {
+      if (resp && resp.trim() === "ok") {
+        // Sincroniza UI con el NUEVO estado
+        if (nuevoEstado === 1) {
+          btn.removeClass('btn-success').addClass('btn-danger').text('Inactivo');
+        } else {
+          btn.removeClass('btn-danger').addClass('btn-success').text('Activo');
+        }
+        btn.attr('estadoProducto', String(nuevoEstado));
+
+        // Opcional: refrescar la tabla sin perder paginación
+        $('.tablaProductos').DataTable().ajax.reload(null, false);
+      } else {
+        Swal.fire({icon:'error', title:'Error', text:'No se pudo cambiar el estado en el servidor.'});
+        console.error('Respuesta inesperada:', resp);
+      }
+    },
+    error: function (xhr) {
+      Swal.fire({icon:'error', title:'Error', text:'No se pudo cambiar el estado del producto.'});
+      console.error('Error AJAX:', xhr?.responseText || xhr);
+    }
+  });
+});
+
+
+
+/*=============================================
 AGREGANDO PRECIO DE VENTA
 =============================================*/
 $("#nuevoPrecioCompra, #editarPrecioCompra").change(function(){
@@ -164,10 +215,10 @@ $(".nuevaImagen").change(function(){
 
   		$(".nuevaImagen").val("");
 
-  		 swal({
+  		 Swal.fire({
 		      title: "Error al subir la imagen",
 		      text: "¡La imagen debe estar en formato JPG o PNG!",
-		      type: "error",
+		      icon: "error",
 		      confirmButtonText: "¡Cerrar!"
 		    });
 
@@ -175,10 +226,10 @@ $(".nuevaImagen").change(function(){
 
   		$(".nuevaImagen").val("");
 
-  		 swal({
+  		 Swal.fire({
 		      title: "Error al subir la imagen",
 		      text: "¡La imagen no debe pesar más de 2MB!",
-		      type: "error",
+		      icon: "error",
 		      confirmButtonText: "¡Cerrar!"
 		    });
 
@@ -247,6 +298,13 @@ $(".tablaProductos tbody").on("click", "button.btnEditarProducto", function(){
 
            $("#editarStock").val(respuesta["stock"]);
 
+           // Precio x Mayor
+           if (typeof respuesta["precioMayor"] !== 'undefined') {
+               $("#editarPrecioMayor").val(respuesta["precioMayor"]);
+           } else {
+               $("#editarPrecioMayor").val(0);
+           }
+
            $("#editarPrecioCompra").val(respuesta["precio_compra"]);
 
            $("#editarPrecioVenta").val(respuesta["precio_venta"]);
@@ -275,11 +333,11 @@ $(".tablaProductos tbody").on("click", "button.btnEliminarProducto", function(){
 	var codigo = $(this).attr("codigo");
 	var imagen = $(this).attr("imagen");
 	
-	swal({
+	Swal.fire({
 
 		title: '¿Está seguro de borrar el producto?',
 		text: "¡Si no lo está puede cancelar la accíón!",
-		type: 'warning',
+		icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',

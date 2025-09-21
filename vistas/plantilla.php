@@ -40,6 +40,9 @@ session_start();
   <!-- switch -->
   <link rel="stylesheet" href="vistas/dist/css/switch.css">
 
+  <!-- Validación de clientes -->
+  <link rel="stylesheet" href="vistas/dist/css/validacion-clientes.css">
+
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -82,6 +85,7 @@ session_start();
 
   <!-- SweetAlert 2 -->
   <script src="vistas/plugins/sweetalert2/sweetalert2.all.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    <!-- By default SweetAlert2 doesn't support IE. To enable IE 11 support, include Promise polyfill:-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 

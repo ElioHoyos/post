@@ -25,6 +25,21 @@ class AjaxProductos{
 
   }
 
+public $activarProducto;
+public $estadoProducto;
+
+public function ajaxActivarProducto() {
+
+  $tabla = "productos";
+  $item1 = "estado";                      // columna a actualizar
+  $valor1 = intval($this->estadoProducto);
+  $item2 = "id";                          // clave primaria
+  $valor2 = intval($this->activarProducto);
+
+  $respuesta = ModeloProductos::mdlActualizarProducto($tabla, $item1, $valor1, $item2, $valor2);
+  echo $respuesta; // "ok" | "error"
+}
+
 
   /*=============================================
   EDITAR PRODUCTO
@@ -37,25 +52,16 @@ class AjaxProductos{
   public function ajaxEditarProducto(){
 
     if($this->traerProductos == "ok"){
-
-      $item = null;
-      $valor = null;
+      // Solo productos activos para el flujo de ventas
       $orden = "id";
-
-      $respuesta = ControladorProductos::ctrMostrarProductos($item, $valor,
-        $orden);
+      $respuesta = ControladorProductos::ctrMostrarProductosActivos($orden);
 
       echo json_encode($respuesta);
 
 
     }else if($this->nombreProducto != ""){
-
-      $item = "descripcion";
-      $valor = $this->nombreProducto;
-      $orden = "id";
-
-      $respuesta = ControladorProductos::ctrMostrarProductos($item, $valor,
-        $orden);
+      // Buscar por descripción pero solo si está activo
+      $respuesta = ControladorProductos::ctrMostrarProductoDescripcionActiva($this->nombreProducto);
 
       echo json_encode($respuesta);
 
@@ -124,6 +130,17 @@ if(isset($_POST["nombreProducto"])){
 
 }
 
+/*=============================================
+ACTIVAR / DESACTIVAR PRODUCTO
+=============================================*/
+if (isset($_POST["activarProducto"]) && isset($_POST["estadoProducto"])) {
+
+  $activar = new AjaxProductos();
+  $activar->activarProducto = $_POST["activarProducto"];   // id del producto
+  $activar->estadoProducto  = $_POST["estadoProducto"];     // 0 ó 1 (NUEVO estado)
+  $activar->ajaxActivarProducto();
+  exit();
+}
 
 
 

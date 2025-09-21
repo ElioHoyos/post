@@ -1494,11 +1494,13 @@ class TCPDF_FONTS {
 	 * Returns the unicode caracter specified by the value
 	 * @param $c (int) UTF-8 value
 	 * @param $unicode (boolean) True if we are in unicode mode, false otherwise.
-	 * @return Returns the specified character.
+	 * @return string The specified character encoded in UTF-8 (or single byte if not unicode)
 	 * @since 2.3.000 (2008-03-05)
 	 * @public static
 	 */
 	public static function unichr($c, $unicode=true) {
+		// Ensure integer for PHP 7.4/8+ where chr() requires int
+		$c = (int)$c;
 		if (!$unicode) {
 			return chr($c);
 		} elseif ($c <= 0x7F) {
@@ -1506,13 +1508,13 @@ class TCPDF_FONTS {
 			return chr($c);
 		} elseif ($c <= 0x7FF) {
 			// two bytes
-			return chr(0xC0 | $c >> 6).chr(0x80 | $c & 0x3F);
+			return chr(0xC0 | $c >> 6).chr(0x80 | ($c & 0x3F));
 		} elseif ($c <= 0xFFFF) {
 			// three bytes
-			return chr(0xE0 | $c >> 12).chr(0x80 | $c >> 6 & 0x3F).chr(0x80 | $c & 0x3F);
+			return chr(0xE0 | $c >> 12).chr(0x80 | (($c >> 6) & 0x3F)).chr(0x80 | ($c & 0x3F));
 		} elseif ($c <= 0x10FFFF) {
 			// four bytes
-			return chr(0xF0 | $c >> 18).chr(0x80 | $c >> 12 & 0x3F).chr(0x80 | $c >> 6 & 0x3F).chr(0x80 | $c & 0x3F);
+			return chr(0xF0 | $c >> 18).chr(0x80 | (($c >> 12) & 0x3F)).chr(0x80 | (($c >> 6) & 0x3F)).chr(0x80 | ($c & 0x3F));
 		} else {
 			return '';
 		}

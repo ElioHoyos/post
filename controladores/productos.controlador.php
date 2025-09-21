@@ -17,6 +17,22 @@ class ControladorProductos{
 	}
 
 	/*=============================================
+	MOSTRAR SOLO PRODUCTOS ACTIVOS (estado = 0)
+	=============================================*/
+	static public function ctrMostrarProductosActivos($orden){
+		$tabla = "productos";
+		return ModeloProductos::mdlMostrarProductosActivos($tabla, $orden);
+	}
+
+	/*=============================================
+	MOSTRAR PRODUCTO POR DESCRIPCIÓN (solo activos)
+	=============================================*/
+	static public function ctrMostrarProductoDescripcionActiva($descripcion){
+		$tabla = "productos";
+		return ModeloProductos::mdlMostrarProductoDescripcionActiva($tabla, $descripcion);
+	}
+
+	/*=============================================
 	CREAR PRODUCTO
 	=============================================*/
 
@@ -35,7 +51,7 @@ class ControladorProductos{
 
 			   	$ruta = "vistas/img/productos/default/anonymous.png";
 
-			   	if(isset($_FILES["nuevaImagen"]["tmp_name"])){
+			   	if(isset($_FILES["nuevaImagen"]["tmp_name"]) && !empty($_FILES["nuevaImagen"]["tmp_name"])){
 
 					list($ancho, $alto) = getimagesize($_FILES["nuevaImagen"]["tmp_name"]);
 
@@ -48,7 +64,9 @@ class ControladorProductos{
 
 					$directorio = "vistas/img/productos/".$_POST["nuevoCodigo"];
 
-					mkdir($directorio, 0755);
+					if(!is_dir($directorio)){
+						mkdir($directorio, 0755);
+					}
 
 					/*=============================================
 					DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
@@ -102,6 +120,7 @@ class ControladorProductos{
 							   "codigo" => $_POST["nuevoCodigo"],
 							   "descripcion" => $_POST["nuevaDescripcion"],
 							   "stock" => $_POST["nuevoStock"],
+							   "precioMayor" => isset($_POST["precioMayor"]) ? $_POST["precioMayor"] : 0,
 							   "precio_compra" => $_POST["nuevoPrecioCompra"],
 							   "precio_venta" => $_POST["nuevoPrecioVenta"],
 							   "imagen" => $ruta);
@@ -251,6 +270,7 @@ class ControladorProductos{
 							   "codigo" => $_POST["editarCodigo"],
 							   "descripcion" => $_POST["editarDescripcion"],
 							   "stock" => $_POST["editarStock"],
+							   "precioMayor" => isset($_POST["editarPrecioMayor"]) ? $_POST["editarPrecioMayor"] : 0,
 							   "precio_compra" => $_POST["editarPrecioCompra"],
 							   "precio_venta" => $_POST["editarPrecioVenta"],
 							   "imagen" => $ruta);

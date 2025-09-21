@@ -42,7 +42,14 @@ class ModeloVentas{
 
 	static public function mdlIngresarVenta($tabla, $datos){
 
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(codigo, id_cliente, id_vendedor, productos, impuesto, neto, total, metodo_pago) VALUES (:codigo, :id_cliente, :id_vendedor, :productos, :impuesto, :neto, :total, :metodo_pago)");
+		/*
+		 * Insertar una venta. A partir de septiembre de 2025 se añadió el campo
+		 * `tipo_comprobante` para almacenar el tipo de comprobante (Boleta, Factura o Ticket).
+		 */
+		$stmt = Conexion::conectar()->prepare(
+			"INSERT INTO $tabla (codigo, id_cliente, id_vendedor, productos, impuesto, neto, total, metodo_pago, tipo_comprobante)
+			 VALUES (:codigo, :id_cliente, :id_vendedor, :productos, :impuesto, :neto, :total, :metodo_pago, :tipo_comprobante)"
+		);
 
 		$stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_cliente", $datos["id_cliente"], PDO::PARAM_INT);
@@ -52,15 +59,12 @@ class ModeloVentas{
 		$stmt->bindParam(":neto", $datos["neto"], PDO::PARAM_STR);
 		$stmt->bindParam(":total", $datos["total"], PDO::PARAM_STR);
 		$stmt->bindParam(":metodo_pago", $datos["metodo_pago"], PDO::PARAM_STR);
+		$stmt->bindParam(":tipo_comprobante", $datos["tipo_comprobante"], PDO::PARAM_STR);
 
 		if($stmt->execute()){
-
 			return "ok";
-
 		}else{
-
 			return "error";
-		
 		}
 
 		$stmt->close();
@@ -74,7 +78,14 @@ class ModeloVentas{
 
 	static public function mdlEditarVenta($tabla, $datos){
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET  id_cliente = :id_cliente, id_vendedor = :id_vendedor, productos = :productos, impuesto = :impuesto, neto = :neto, total= :total, metodo_pago = :metodo_pago WHERE codigo = :codigo");
+		/*
+		 * Actualizar venta incluyendo el tipo de comprobante. Se conserva el campo
+		 * `tipo_comprobante` si ya existía, o se actualiza con el nuevo valor
+		 * pasado desde el controlador.
+		 */
+		$stmt = Conexion::conectar()->prepare(
+			"UPDATE $tabla SET  id_cliente = :id_cliente, id_vendedor = :id_vendedor, productos = :productos, impuesto = :impuesto, neto = :neto, total = :total, metodo_pago = :metodo_pago, tipo_comprobante = :tipo_comprobante WHERE codigo = :codigo"
+		);
 
 		$stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_INT);
 		$stmt->bindParam(":id_cliente", $datos["id_cliente"], PDO::PARAM_INT);
@@ -84,15 +95,12 @@ class ModeloVentas{
 		$stmt->bindParam(":neto", $datos["neto"], PDO::PARAM_STR);
 		$stmt->bindParam(":total", $datos["total"], PDO::PARAM_STR);
 		$stmt->bindParam(":metodo_pago", $datos["metodo_pago"], PDO::PARAM_STR);
+		$stmt->bindParam(":tipo_comprobante", $datos["tipo_comprobante"], PDO::PARAM_STR);
 
 		if($stmt->execute()){
-
 			return "ok";
-
 		}else{
-
 			return "error";
-		
 		}
 
 		$stmt->close();
