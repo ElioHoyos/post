@@ -122,7 +122,7 @@ $(document).on("click", "button.agregarProducto", function(){
 
       // Sin stock
       if(stock == 0){
-        Swal.fire({ icon: "error", title: "No hay stock disponible", confirmButtonText: "¡Cerrar!" });
+        Swal.fire({ title: "No hay stock disponible", icon: "error", confirmButtonText: "¡Cerrar!" });
         return;
       }
 
@@ -397,52 +397,27 @@ $(".formularioVenta").on("change", "input.nuevaCantidadProducto", function(){
   var $precio = $row.find(".nuevoPrecioProducto");
   var $chk    = $row.find(".chkMayor");
 
-  var stock    = Number($(this).attr("stock")) || 0;
   var cantidad = n($(this).val() || 0);
-
-  // Clamp mínimo (si hay stock) y máximo (stock disponible)
-  if (stock > 0 && cantidad < 1) {
-    cantidad = 1;
-    $(this).val(1);
-  }
-
-  if (cantidad > stock) {
-    cantidad = stock;               // tope = stock
-    $(this).val(stock);             // deja el máximo en el input
-    $(this).attr("nuevoStock", 0);  // ya no queda stock en bodega
-
-    // Recalcular precio con la cantidad topeada (respetando precio mayorista)
-    var pNormal = n($precio.attr("data-precio-normal") || 0);
-    var pMayor  = n($precio.attr("data-precio-mayor")   || 0);
-    var usarMayor = $chk.is(':checked') || (UMBRAL_MAYOR>0 && cantidad>=UMBRAL_MAYOR && pMayor>0);
-    var unit = (usarMayor && pMayor>0) ? pMayor : pNormal;
-
-    $precio.attr('precioReal', unit);
-    $precio.val(cantidad * unit);
-
-    Swal.fire({
-      icon: "error",
-      title: "La cantidad supera el stock",
-      text: "Solo hay " + stock + " unidades.",
-      confirmButtonText: "Cerrar"
-    });
-
-    sumarTotalPrecios();
-    agregarImpuesto();
-    listarProductos();
-    actualizarUIMayorista($row);
-    return;
-  }
-
-  // Flujo normal (no supera stock)
   var pNormal  = n($precio.attr("data-precio-normal") || 0);
   var pMayor   = n($precio.attr("data-precio-mayor")   || 0);
-  var usarMayor = $chk.is(':checked') || (UMBRAL_MAYOR>0 && cantidad>=UMBRAL_MAYOR && pMayor>0);
+
+  var usarMayor = ($chk.is(':checked')) || (UMBRAL_MAYOR>0 && cantidad>=UMBRAL_MAYOR && pMayor>0);
   var unit = (usarMayor && pMayor>0) ? pMayor : pNormal;
 
-  $(this).attr("nuevoStock", Math.max(stock - cantidad, 0));
   $precio.attr('precioReal', unit);
   $precio.val(cantidad * unit);
+
+  var nuevoStock = Number($(this).attr("stock")) - cantidad;
+  $(this).attr("nuevoStock", nuevoStock);
+
+  if(cantidad > Number($(this).attr("stock"))){
+    $(this).val(0);
+    $(this).attr("nuevoStock", $(this).attr("stock"));
+    $precio.val(0);
+    sumarTotalPrecios();
+    Swal.fire({ title: "La cantidad supera el Stock", text: "¡Sólo hay "+$(this).attr("stock")+" unidades!", icon: "error", confirmButtonText: "¡Cerrar!" });
+    return;
+  }
 
   sumarTotalPrecios();
   agregarImpuesto();
@@ -600,8 +575,8 @@ $(".tablas").on("click", ".btnEliminarVenta", function(){
     cancelButtonColor: '#d33',
     cancelButtonText: 'Cancelar',
     confirmButtonText: 'Si, borrar venta!'
-  }).then((result)=>{
-   if (result.isConfirmed) window.location = "index.php?ruta=ventas&idVenta="+idVenta;
+  }).then(function(result){
+    if (result.value) window.location = "index.php?ruta=ventas&idVenta="+idVenta;
   })
 });
 

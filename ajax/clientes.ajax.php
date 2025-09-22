@@ -1,71 +1,65 @@
 <?php
-
 require_once "../controladores/clientes.controlador.php";
 require_once "../modelos/clientes.modelo.php";
 
-class AjaxClientes{
-
-	/*=============================================
-	EDITAR CLIENTE
-	=============================================*/	
-
-	public $idCliente;
-
-	public function ajaxEditarCliente(){
-
-		$item = "id";
-		$valor = $this->idCliente;
-
-		$respuesta = ControladorClientes::ctrMostrarClientes($item, $valor);
-
-		echo json_encode($respuesta);
-
-	}
-
-	/*=============================================
-	BUSCAR CLIENTE POR DNI
-	=============================================*/	
-
-	public $dniCliente;
-
-	public function ajaxBuscarClienteDni(){
-
-		$item = "documento";
-		$valor = $this->dniCliente;
-
-		$respuesta = ControladorClientes::ctrMostrarClientes($item, $valor);
-
-		// Siempre devolver un JSON válido, incluso si no hay resultados
-		if($respuesta){
-			echo json_encode($respuesta);
-		} else {
-			echo json_encode(array('error' => 'Cliente no encontrado'));
-		}
-
-	}
-
+// Manejar solicitudes AJAX para clientes
+if (isset($_POST['accion'])) {
+    switch ($_POST['accion']) {
+        case 'buscarPorDocumento':
+            // Buscar cliente por documento
+            $tipoDocumento = $_POST['tipoDocumento'];
+            $documento = $_POST['documento'];
+            
+            $item = 'documento';
+            $valor = $documento;
+            
+            $cliente = ControladorClientes::ctrMostrarClientes($item, $valor);
+            
+            if ($cliente && $cliente['tipo_documento'] == $tipoDocumento) {
+                echo json_encode([
+                    'ok' => true,
+                    'id' => $cliente['id'],
+                    'nombre' => $cliente['nombre'],
+                    'documento' => $cliente['documento'],
+                    'tipo_documento' => $cliente['tipo_documento']
+                ]);
+            } else {
+                echo json_encode(['ok' => false]);
+            }
+            break;
+            
+        case 'crearRapido':
+            // Crear cliente rápidamente
+            $datos = array(
+                "nombre" => $_POST['nombre'],
+                "tipo_documento" => $_POST['tipo_documento'],
+                "documento" => $_POST['documento'],
+                "direccion" => $_POST['direccion'],
+                "email" => "",
+                "telefono" => "",
+                "fecha_nacimiento" => ""
+            );
+            
+            $idCliente = ControladorClientes::ctrCrearClienteAjax($datos);
+            
+            if ($idCliente) {
+                echo json_encode([
+                    'ok' => true,
+                    'id' => $idCliente,
+                    'mensaje' => 'Cliente creado exitosamente'
+                ]);
+            } else {
+                echo json_encode([
+                    'ok' => false,
+                    'mensaje' => 'Error al crear el cliente'
+                ]);
+            }
+            break;
+            
+        default:
+            echo json_encode(['ok' => false, 'mensaje' => 'Acción no válida']);
+            break;
+    }
+    exit;
 }
-
-/*=============================================
-EDITAR CLIENTE
-=============================================*/	
-
-if(isset($_POST["idCliente"])){
-
-	$cliente = new AjaxClientes();
-	$cliente -> idCliente = $_POST["idCliente"];
-	$cliente -> ajaxEditarCliente();
-
-}
-
-/*=============================================
-BUSCAR CLIENTE POR DNI
-=============================================*/	
-
-if(isset($_POST["buscarClienteDni"])){
-
-	$cliente = new AjaxClientes();
-	$cliente -> dniCliente = $_POST["buscarClienteDni"];
-	$cliente -> ajaxBuscarClienteDni();
-
-}
+?>

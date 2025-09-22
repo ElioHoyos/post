@@ -77,7 +77,7 @@ class ControladorVentas{
 		ACTUALIZAR CLIENTE (compras y última compra)
 		=============================================*/
 		$tablaClientes = "clientes";
-		$idCliente     = $_POST["seleccionarCliente"];
+		$idCliente = $_POST["seleccionarCliente"] ?? $_POST["idClienteVenta"] ?? null;  // CAMBIO: era seleccionarCliente
 
 		$traerCliente  = ModeloClientes::mdlMostrarClientes($tablaClientes, "id", $idCliente);
 

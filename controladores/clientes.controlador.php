@@ -297,4 +297,23 @@ class ControladorClientes
             }
         }
     }
+
+/* Crear cliente desde AJAX y devolver el ID */
+static public function ctrCrearClienteAjax($datos){
+
+  // Si ya tienes validaciones/saneos en ctrCrearCliente, puedes reusarlos aquí.
+  $tabla = "clientes";
+  $id = ModeloClientes::mdlCrearClienteAjax($tabla, $datos);
+
+  // Si tu modelo tradicional devuelve "ok" pero no el ID, podrías,
+  // como fallback, buscar por documento:
+  if(!$id){
+    $c = ModeloClientes::mdlMostrarClientes($tabla, "documento", $datos["documento"]);
+    if($c && isset($c["id"])) $id = $c["id"];
+  }
+
+  return $id;
 }
+
+}
+

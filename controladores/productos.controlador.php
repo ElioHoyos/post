@@ -16,21 +16,21 @@ class ControladorProductos{
 
 	}
 
-	/*=============================================
-	MOSTRAR SOLO PRODUCTOS ACTIVOS (estado = 0)
-	=============================================*/
-	static public function ctrMostrarProductosActivos($orden){
-		$tabla = "productos";
-		return ModeloProductos::mdlMostrarProductosActivos($tabla, $orden);
-	}
+/*=============================================
+MOSTRAR SOLO PRODUCTOS ACTIVOS (estado = 0) Y CON STOCK > 0
+=============================================*/
+static public function ctrMostrarProductosActivos($orden){
+    $tabla = "productos";
+    return ModeloProductos::mdlMostrarProductosActivos($tabla, $orden);
+}
 
-	/*=============================================
-	MOSTRAR PRODUCTO POR DESCRIPCIÓN (solo activos)
-	=============================================*/
-	static public function ctrMostrarProductoDescripcionActiva($descripcion){
-		$tabla = "productos";
-		return ModeloProductos::mdlMostrarProductoDescripcionActiva($tabla, $descripcion);
-	}
+/*=============================================
+MOSTRAR PRODUCTO POR DESCRIPCIÓN (solo activos y con stock > 0)
+=============================================*/
+static public function ctrMostrarProductoDescripcionActiva($descripcion){
+    $tabla = "productos";
+    return ModeloProductos::mdlMostrarProductoDescripcionActiva($tabla, $descripcion);
+}
 
 	/*=============================================
 	CREAR PRODUCTO
@@ -130,21 +130,18 @@ class ControladorProductos{
 				if($respuesta == "ok"){
 
 					echo'<script>
-
-						swal({
-							  type: "success",
-							  title: "El producto ha sido guardado correctamente",
-							  showConfirmButton: true,
-							  confirmButtonText: "Cerrar"
-							  }).then(function(result){
-										if (result.value) {
-
-										window.location = "productos";
-
-										}
-									})
-
-						</script>';
+						Swal.fire({
+							icon: "success",
+							title: "El producto guardado correctamente",
+							showConfirmButton: true,
+							confirmButtonText: "Cerrar",
+							timer: 5000
+						}).then(function(result){
+							if (result.value) {
+								window.location = "productos";
+							}
+						});
+					</script>';
 
 				}
 
@@ -152,20 +149,17 @@ class ControladorProductos{
 			}else{
 
 				echo'<script>
-
-					swal({
-						  type: "error",
-						  title: "¡El producto no puede ir con los campos vacíos o llevar caracteres especiales!",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-							if (result.value) {
-
+					Swal.fire({
+						icon: "error",
+						title: "¡El producto no puede ir con los campos vacíos o llevar caracteres especiales!",
+						showConfirmButton: true,
+						confirmButtonText: "Cerrar",
+						timer: 5000
+					}).then(function(result){
+						if (result.value) {
 							window.location = "productos";
-
-							}
-						})
-
+						}
+					});
 			  	</script>';
 			}
 		}
@@ -280,21 +274,18 @@ class ControladorProductos{
 				if($respuesta == "ok"){
 
 					echo'<script>
-
-						swal({
-							  type: "success",
-							  title: "El producto ha sido editado correctamente",
-							  showConfirmButton: true,
-							  confirmButtonText: "Cerrar"
-							  }).then(function(result){
-										if (result.value) {
-
-										window.location = "productos";
-
-										}
-									})
-
-						</script>';
+						Swal.fire({
+							icon: "success",
+							title: "El producto ha sido editado correctamente",
+							showConfirmButton: true,
+							confirmButtonText: "Cerrar",
+							timer: 5000
+						}).then(function(result){
+							if (result.value) {
+								window.location = "productos";
+							}
+						});
+					</script>';
 
 				}
 
@@ -302,20 +293,17 @@ class ControladorProductos{
 			}else{
 
 				echo'<script>
-
-					swal({
-						  type: "error",
-						  title: "¡El producto no puede ir con los campos vacíos o llevar caracteres especiales!",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-							if (result.value) {
-
+					Swal.fire({
+						icon: "error",
+						title: "¡El producto no puede ir con los campos vacíos o llevar caracteres especiales!",
+						showConfirmButton: true,
+						confirmButtonText: "Cerrar",
+						timer: 5000
+					}).then(function(result){
+						if (result.value) {
 							window.location = "productos";
-
-							}
-						})
-
+						}
+					});
 			  	</script>';
 			}
 		}
@@ -344,20 +332,17 @@ class ControladorProductos{
 			if($respuesta == "ok"){
 
 				echo'<script>
-
-				swal({
-					  type: "success",
-					  title: "El producto ha sido borrado correctamente",
-					  showConfirmButton: true,
-					  confirmButtonText: "Cerrar"
-					  }).then(function(result){
-								if (result.value) {
-
-								window.location = "productos";
-
-								}
-							})
-
+					Swal.fire({
+						icon: "success",
+						title: "El producto ha sido borrado correctamente",
+						showConfirmButton: true,
+						confirmButtonText: "Cerrar",
+						timer: 5000
+					}).then(function(result){
+						if (result.value) {
+							window.location = "productos";
+						}
+					});
 				</script>';
 
 			}		

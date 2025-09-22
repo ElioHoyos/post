@@ -145,4 +145,26 @@ class ModeloProductos
 
 		$stmt = null;
 	}
+
+/*=============================================
+MOSTRAR PRODUCTOS ACTIVOS Y CON STOCK > 0
+=============================================*/
+static public function mdlMostrarProductosActivos($tabla, $orden){
+    $link = Conexion::conectar();
+    $stmt = $link->prepare("SELECT * FROM $tabla WHERE estado = 0 AND stock > 0 ORDER BY $orden DESC");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/*=============================================
+MOSTRAR PRODUCTO POR DESCRIPCIÓN (solo activos y con stock > 0)
+=============================================*/
+static public function mdlMostrarProductoDescripcionActiva($tabla, $descripcion){
+    $link = Conexion::conectar();
+    $stmt = $link->prepare("SELECT * FROM $tabla WHERE descripcion LIKE :descripcion AND estado = 0 AND stock > 0");
+    $stmt->bindValue(':descripcion', '%'.$descripcion.'%', PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

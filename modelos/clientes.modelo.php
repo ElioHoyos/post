@@ -159,4 +159,31 @@ class ModeloClientes{
 
 	}
 
+
+static public function mdlCrearClienteAjax($tabla, $datos){
+
+  $pdo = Conexion::conectar();
+
+  $sql = "INSERT INTO $tabla (nombre, tipo_documento, documento, email, telefono, direccion, fecha_nacimiento)
+          VALUES (:nombre, :tipo_documento, :documento, :email, :telefono, :direccion, :fecha_nacimiento)";
+
+  $stmt = $pdo->prepare($sql);
+
+  $stmt->bindParam(":nombre",           $datos["nombre"], PDO::PARAM_STR);
+  $stmt->bindParam(":tipo_documento",   $datos["tipo_documento"], PDO::PARAM_STR);
+  $stmt->bindParam(":documento",        $datos["documento"], PDO::PARAM_STR);
+  $stmt->bindParam(":email",            $datos["email"], PDO::PARAM_STR);
+  $stmt->bindParam(":telefono",         $datos["telefono"], PDO::PARAM_STR);
+  $stmt->bindParam(":direccion",        $datos["direccion"], PDO::PARAM_STR);
+  $stmt->bindParam(":fecha_nacimiento", $datos["fecha_nacimiento"]);
+
+  if($stmt->execute()){
+    return $pdo->lastInsertId(); // ✅ devolvemos el ID
+  }else{
+    return false;
+  }
+}
+
+
+
 }
