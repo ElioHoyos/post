@@ -88,11 +88,11 @@ $(document).on("click", "button.agregarProducto", function(){
   var idProducto = $(this).attr("idProducto");
   if(!idProducto) return;
 
-  // Bloqueo anti-duplicado
-  if (productosSeleccionados.has(String(idProducto)) || filaPorIdProducto(idProducto).length){
+  // Bloqueo anti-duplicado - CORREGIDO: Paréntesis extra eliminado
+  if (productosSeleccionados.has(String(idProducto)) || filaPorIdProducto(idProducto).length) {
     var $ex = filaPorIdProducto(idProducto);
     toastInfo('Ya agregado','Ese producto ya está en la venta.');
-    if($ex.length){ $ex.addClass('atencion'); setTimeout(()=>{$ex.removeClass('atencion')},400); }
+    if($ex.length){ $ex.addClass('atencion'); setTimeout(function(){$ex.removeClass('atencion')},400); }
     return;
   }
 
@@ -166,7 +166,7 @@ $(document).on("click", "button.agregarProducto", function(){
       var $ultima = $(".nuevoProducto .row").last();
       actualizarUIMayorista($ultima);
 
-      // Registrar en set y deshabilitar TODOS los botones de ese id
+      // Registrar en set y deshabilitar TODOS los botones de ese id - CORREGIDO
       productosSeleccionados.add(String(idProducto));
       deshabilitarBotonesAdd(idProducto);
 

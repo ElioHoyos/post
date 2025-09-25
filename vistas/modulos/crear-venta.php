@@ -112,6 +112,43 @@ if (session_status() == PHP_SESSION_NONE) {
     #tipoDocVenta{ max-width:110px; }
     .cv-card{ padding:12px; }
   }
+
+  .swal2-popup {
+    border-radius: 15px !important;
+  }
+
+  .swal2-title {
+    font-size: 1.5em !important;
+  }
+
+  .venta-exitosa {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .timer-progress {
+    width: 100%;
+    height: 5px;
+    background: #e9ecef;
+    border-radius: 3px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+
+  .timer-progress-bar {
+    height: 100%;
+    background: #28a745;
+    width: 100%;
+    animation: progressBar 5s linear forwards;
+  }
+
+  @keyframes progressBar {
+    0% { width: 100%; }
+    100% { width: 0%; }
+  }
+
                 </style>
 
                 <div class="form-group">
@@ -218,18 +255,17 @@ if (session_status() == PHP_SESSION_NONE) {
                 TIPO DE COMPROBANTE
                 ======================================-->
                 <div class="form-group row">
-                  <div class="col-xs-12">
-                    <div class="input-group">
-                      <span class="input-group-addon"><i class="fa fa-file-text"></i></span>
-                      <select class="form-control" id="tipoComprobante" name="tipoComprobante" required>
-                        <option value="">Seleccione tipo de comprobante</option>
-                        <option value="boleta">Boleta</option>
-                        <option value="factura">Factura</option>
-                        <option value="ticket">Ticket</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
+    <div class="col-xs-12">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+            <select class="form-control" id="nuevoTipoComprobante" name="nuevoTipoComprobante" required>
+                <option value="boleta">Boleta</option>
+                <option value="factura">Factura</option>
+                <option value="ticket">Ticket</option>
+            </select>
+        </div>
+    </div>
+</div>
 
                 <br>
 

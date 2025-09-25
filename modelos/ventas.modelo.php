@@ -7,45 +7,30 @@ class ModeloVentas{
 	/*=============================================
 	MOSTRAR VENTAS
 	=============================================*/
-
 	static public function mdlMostrarVentas($tabla, $item, $valor){
 
 		if($item != null){
-
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item ORDER BY id ASC");
-
 			$stmt -> bindParam(":".$item, $valor, PDO::PARAM_STR);
-
 			$stmt -> execute();
-
 			return $stmt -> fetch();
 
 		}else{
-
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla ORDER BY id ASC");
-
 			$stmt -> execute();
-
 			return $stmt -> fetchAll();
 
 		}
 		
 		$stmt -> close();
-
 		$stmt = null;
-
 	}
 
 	/*=============================================
 	REGISTRO DE VENTA
 	=============================================*/
-
 	static public function mdlIngresarVenta($tabla, $datos){
 
-		/*
-		 * Insertar una venta. A partir de septiembre de 2025 se añadió el campo
-		 * `tipo_comprobante` para almacenar el tipo de comprobante (Boleta, Factura o Ticket).
-		 */
 		$stmt = Conexion::conectar()->prepare(
 			"INSERT INTO $tabla (codigo, id_cliente, id_vendedor, productos, impuesto, neto, total, metodo_pago, tipo_comprobante)
 			 VALUES (:codigo, :id_cliente, :id_vendedor, :productos, :impuesto, :neto, :total, :metodo_pago, :tipo_comprobante)"
@@ -69,20 +54,13 @@ class ModeloVentas{
 
 		$stmt->close();
 		$stmt = null;
-
 	}
 
 	/*=============================================
 	EDITAR VENTA
 	=============================================*/
-
 	static public function mdlEditarVenta($tabla, $datos){
 
-		/*
-		 * Actualizar venta incluyendo el tipo de comprobante. Se conserva el campo
-		 * `tipo_comprobante` si ya existía, o se actualiza con el nuevo valor
-		 * pasado desde el controlador.
-		 */
 		$stmt = Conexion::conectar()->prepare(
 			"UPDATE $tabla SET  id_cliente = :id_cliente, id_vendedor = :id_vendedor, productos = :productos, impuesto = :impuesto, neto = :neto, total = :total, metodo_pago = :metodo_pago, tipo_comprobante = :tipo_comprobante WHERE codigo = :codigo"
 		);
@@ -105,62 +83,41 @@ class ModeloVentas{
 
 		$stmt->close();
 		$stmt = null;
-
 	}
 
 	/*=============================================
 	ELIMINAR VENTA
 	=============================================*/
-
-	static public function mdlEliminarVenta($tabla, $datos){
+	static public function mdlBorrarVenta($tabla, $datos){
 
 		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id = :id");
-
 		$stmt -> bindParam(":id", $datos, PDO::PARAM_INT);
 
 		if($stmt -> execute()){
-
 			return "ok";
-		
 		}else{
-
 			return "error";	
-
 		}
 
 		$stmt -> close();
-
 		$stmt = null;
-
 	}
 
 	/*=============================================
 	RANGO FECHAS
 	=============================================*/	
-
 	static public function mdlRangoFechasVentas($tabla, $fechaInicial, $fechaFinal){
 
 		if($fechaInicial == null){
-
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla ORDER BY id ASC");
-
 			$stmt -> execute();
-
 			return $stmt -> fetchAll();	
-
-
 		}else if($fechaInicial == $fechaFinal){
-
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE fecha like '%$fechaFinal%'");
-
 			$stmt -> bindParam(":fecha", $fechaFinal, PDO::PARAM_STR);
-
 			$stmt -> execute();
-
 			return $stmt -> fetchAll();
-
 		}else{
-
 			$fechaActual = new DateTime();
 			$fechaActual ->add(new DateInterval("P1D"));
 			$fechaActualMasUno = $fechaActual->format("Y-m-d");
@@ -170,41 +127,24 @@ class ModeloVentas{
 			$fechaFinalMasUno = $fechaFinal2->format("Y-m-d");
 
 			if($fechaFinalMasUno == $fechaActualMasUno){
-
 				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE fecha BETWEEN '$fechaInicial' AND '$fechaFinalMasUno'");
-
 			}else{
-
-
 				$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE fecha BETWEEN '$fechaInicial' AND '$fechaFinal'");
-
 			}
 		
 			$stmt -> execute();
-
 			return $stmt -> fetchAll();
-
 		}
-
 	}
 
 	/*=============================================
 	SUMAR EL TOTAL DE VENTAS
 	=============================================*/
-
 	static public function mdlSumaTotalVentas($tabla){	
-
 		$stmt = Conexion::conectar()->prepare("SELECT SUM(neto) as total FROM $tabla");
-
 		$stmt -> execute();
-
 		return $stmt -> fetch();
-
 		$stmt -> close();
-
 		$stmt = null;
-
 	}
-
-	
 }

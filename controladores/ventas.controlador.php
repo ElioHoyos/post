@@ -13,6 +13,15 @@ class ControladorVentas{
 	}
 
 	/*=============================================
+    SUMAR EL TOTAL DE VENTAS
+    =============================================*/
+    static public function ctrSumaTotalVentas(){
+        $tabla = "ventas";
+        $respuesta = ModeloVentas::mdlSumaTotalVentas($tabla);
+        return $respuesta;
+    }
+
+	/*=============================================
 	CREAR VENTA
 	=============================================*/
 	static public function ctrCrearVenta(){
@@ -22,7 +31,7 @@ class ControladorVentas{
 		/* Validación: debe haber productos */
 		if(empty($_POST["listaProductos"])){
 			echo'<script>
-				swal({
+				Swal.fire({
 					type: "error",
 					title: "La venta no se puede ejecutar sin productos",
 					showConfirmButton: true,
@@ -37,7 +46,7 @@ class ControladorVentas{
 		$listaProductos = json_decode($_POST["listaProductos"], true);
 		if(!is_array($listaProductos) || !count($listaProductos)){
 			echo'<script>
-				swal({ type:"error", title:"Lista de productos inválida", showConfirmButton:true, confirmButtonText:"Cerrar" })
+				Swal.fire({ type:"error", title:"Lista de productos inválida", showConfirmButton:true, confirmButtonText:"Cerrar" })
 				.then(function(){ window.location = "ventas"; });
 			</script>';
 			return;
@@ -77,8 +86,7 @@ class ControladorVentas{
 		ACTUALIZAR CLIENTE (compras y última compra)
 		=============================================*/
 		$tablaClientes = "clientes";
-		$idCliente = $_POST["seleccionarCliente"] ?? $_POST["idClienteVenta"] ?? null;  // CAMBIO: era seleccionarCliente
-
+		$idCliente = $_POST["seleccionarCliente"] ?? $_POST["idClienteVenta"] ?? null;
 		$traerCliente  = ModeloClientes::mdlMostrarClientes($tablaClientes, "id", $idCliente);
 
 		$comprasPrevias = $traerCliente ? (int)$traerCliente["compras"] : 0;
@@ -93,8 +101,6 @@ class ControladorVentas{
 		GUARDAR LA VENTA
 		=============================================*/
 		$tabla = "ventas";
-        // Preparar los datos de la venta incluyendo el tipo de comprobante.
-        // "tipo_comprobante" proviene del select en el formulario (Boleta, Factura o Ticket).
         $datos = array(
             "id_vendedor"      => $_POST["idVendedor"],
             "id_cliente"       => $_POST["seleccionarCliente"],
@@ -110,22 +116,82 @@ class ControladorVentas{
 		$respuesta = ModeloVentas::mdlIngresarVenta($tabla, $datos);
 
 		if($respuesta == "ok"){
-			echo'<script>
-				localStorage.removeItem("rango");
-				swal({
-					type: "success",
-					title: "La venta ha sido guardada correctamente",
-					showConfirmButton: true,
-					confirmButtonText: "Imprimir"
-				}).then(function(result){
-					if (result.value) {
-						window.open("extensiones/tcpdf/pdf/boleta.php?codigo='.$_POST["nuevaVenta"].'", "_blank");
-						window.location = "crear-venta";
-					}
-				});
-			</script>';
+		    // Calcular cantidad de productos
+		    $listaProductos = json_decode($_POST["listaProductos"], true);
+		    $totalProductos = 0;
+		    foreach ($listaProductos as $producto) {
+		        $totalProductos += $producto['cantidad'];
+		    }
+		    
+		    // Determinar el tipo de comprobante para la impresión
+		    $tipoComprobante = isset($_POST["nuevoTipoComprobante"]) ? $_POST["nuevoTipoComprobante"] : "boleta";
+		    $archivoImpresion = ($tipoComprobante == "factura") ? "factura.php" : "boleta.php";
+		    
+		    echo '<script>
+		        localStorage.removeItem("rango");
+		        
+		        // Abrir impresión inmediatamente (antes del alerta)
+		        var ventanaImpresion = window.open("extensiones/tcpdf/pdf/'.$archivoImpresion.'?codigo=' . $_POST["nuevaVenta"] . '", "_blank");
+		        
+		        // Si el navegador bloquea la ventana, mostrar instrucciones
+		        if (!ventanaImpresion || ventanaImpresion.closed || typeof ventanaImpresion.closed == "undefined") {
+		            var mensajeImpresion = "<p style=\"color: #dc3545;\"><i class=\"fa fa-warning\"></i> La impresión fue bloqueada. <a href=\"extensiones/tcpdf/pdf/'.$archivoImpresion.'?codigo=' . $_POST["nuevaVenta"] . '\" target=\"_blank\">Haz clic aquí para abrir el comprobante</a></p>";
+		        } else {
+		            var mensajeImpresion = "<p style=\"color: #28a745;\"><i class=\"fa fa-check\"></i> El comprobante se abrió correctamente</p>";
+		        }
+		        
+		        Swal.fire({
+		            title: "🎊 Venta Exitosa",
+		            html: `
+		                <div style="text-align: center; padding: 15px;">
+		                    <div style="font-size: 48px; margin-bottom: 15px;">✅</div>
+		                    <h3 style="color: #28a745; margin-bottom: 20px;">¡Venta Registrada!</h3>
+		                    
+		                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+		                        <div style="display: flex; justify-content: space-around; text-align: center;">
+		                            <div>
+		                                <div style="font-size: 24px; color: #007bff;">' . count($listaProductos) . '</div>
+		                                <div style="font-size: 12px; color: #6c757d;">Productos</div>
+		                            </div>
+		                            <div>
+		                                <div style="font-size: 24px; color: #28a745;">' . $totalProductos . '</div>
+		                                <div style="font-size: 12px; color: #6c757d;">Unidades</div>
+		                            </div>
+		                            <div>
+		                                <div style="font-size: 24px; color: #fd7e14;">$ ' . number_format($_POST["totalVenta"], 2) . '</div>
+		                                <div style="font-size: 12px; color: #6c757d;">Total</div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                    
+		                    ` + mensajeImpresion + `
+		                    
+		                    <div class="timer-progress">
+		                        <div class="timer-progress-bar"></div>
+		                    </div>
+		                </div>
+		            `,
+		            icon: "success",
+		            showConfirmButton: false,
+		            timer: 5000,
+		            timerProgressBar: true
+		        }).then(() => {
+		            window.location = "crear-venta";
+		        });
+		    </script>';
+		} else {
+		    echo '<script>
+		        Swal.fire({
+		            icon: "error",
+		            title: "Error",
+		            text: "No se pudo registrar la venta",
+		            confirmButtonText: "Cerrar"
+		        });
+		    </script>';
 		}
 	}
+
+
 
 	/*=============================================
 	EDITAR VENTA
@@ -140,7 +206,7 @@ class ControladorVentas{
 
 		if(!$traerVenta){
 			echo'<script>
-				swal({ type:"error", title:"Venta no encontrada", showConfirmButton:true, confirmButtonText:"Cerrar" })
+				Swal.fire({ type:"error", title:"Venta no encontrada", showConfirmButton:true, confirmButtonText:"Cerrar" })
 				.then(function(){ window.location = "ventas"; });
 			</script>';
 			return;
@@ -180,11 +246,12 @@ class ControladorVentas{
 
 				/* Stock = stock actual + cantidad */
 				$nuevoStock = (int)$prod["stock"] + $cant;
+				if($nuevoStock < 0) $nuevoStock = 0;
 				ModeloProductos::mdlActualizarProducto($tablaProductos, "stock", $nuevoStock, "id", $idProducto);
 			}
 
 			/* Restar compras al cliente por la venta anterior */
-			$tablaClientes   = "clientes";
+			$tablaClientes = "clientes";
 			$idClienteActual = $_POST["seleccionarCliente"];
 			$cliente = ModeloClientes::mdlMostrarClientes($tablaClientes, "id", $idClienteActual);
 			$comprasPrev = $cliente ? (int)$cliente["compras"] : 0;
@@ -197,11 +264,10 @@ class ControladorVentas{
 			=============================================*/
 			$productosDespues = json_decode($listaProductos, true);
 			$totalDespues = array();
-
 			foreach ($productosDespues as $value) {
 
 				$idProducto = (int)$value["id"];
-				$cant       = (int)$value["cantidad"];
+				$cant = (int)$value["cantidad"];
 
 				array_push($totalDespues, $cant);
 
@@ -217,47 +283,41 @@ class ControladorVentas{
 				$nuevoStock = (int)$prod2["stock"] - $cant;
 				if($nuevoStock < 0) $nuevoStock = 0;
 				ModeloProductos::mdlActualizarProducto($tablaProductos, "stock", $nuevoStock, "id", $idProducto);
+
 			}
 
-			/* Sumar compras al cliente por la nueva lista */
-			$cliente2 = ModeloClientes::mdlMostrarClientes($tablaClientes, "id", $idClienteActual);
-			$comprasBase = $cliente2 ? (int)$cliente2["compras"] : 0;
-			$comprasFinal = $comprasBase + array_sum($totalDespues);
-			ModeloClientes::mdlActualizarCliente($tablaClientes, "compras", $comprasFinal, $idClienteActual);
-
-			/* Ultima compra (Lima) */
-			date_default_timezone_set('America/Lima');
-			$valorUltima = date('Y-m-d').' '.date('H:i:s');
-			ModeloClientes::mdlActualizarCliente($tablaClientes, "ultima_compra", $valorUltima, $idClienteActual);
+			/* Actualizar compras al cliente por la nueva venta */
+			$nuevaSuma = array_sum($totalDespues) + $comprasNueva;
+			ModeloClientes::mdlActualizarCliente($tablaClientes, "compras", $nuevaSuma, $idClienteActual);
 		}
 
 		/*=============================================
-		GUARDAR CAMBIOS DE LA VENTA
+		GUARDAR LA VENTA
 		=============================================*/
-        // Incluir tipo_comprobante al editar venta. Si no viene en el POST, conservar el existente.
-        $datos = array(
-            "id_vendedor"      => $_POST["idVendedor"],
-            "id_cliente"       => $_POST["seleccionarCliente"],
-            "codigo"           => $_POST["editarVenta"],
-            "productos"        => $listaProductos,
-            "impuesto"         => $_POST["nuevoPrecioImpuesto"],
-            "neto"             => $_POST["nuevoPrecioNeto"],
-            "total"            => $_POST["totalVenta"],
-            "metodo_pago"      => $_POST["listaMetodoPago"],
-            "tipo_comprobante" => isset($_POST["nuevoTipoComprobante"]) ? $_POST["nuevoTipoComprobante"] : (isset($traerVenta["tipo_comprobante"]) ? $traerVenta["tipo_comprobante"] : "Boleta")
-        );
+		$datos = array(
+			"id"               => $_POST["idVenta"],
+			"id_vendedor"      => $_POST["idVendedor"],
+			"id_cliente"       => $_POST["seleccionarCliente"],
+			"codigo"           => $_POST["editarVenta"],
+			"productos"        => $listaProductos,
+			"impuesto"         => $_POST["nuevoPrecioImpuesto"],
+			"neto"             => $_POST["nuevoPrecioNeto"],
+			"total"            => $_POST["totalVenta"],
+			"metodo_pago"      => $_POST["listaMetodoPago"],
+			"tipo_comprobante" => isset($_POST["editarTipoComprobante"]) ? $_POST["editarTipoComprobante"] : "Boleta"
+		);
 
 		$respuesta = ModeloVentas::mdlEditarVenta($tabla, $datos);
 
 		if($respuesta == "ok"){
 			echo'<script>
 				localStorage.removeItem("rango");
-				swal({
+				Swal.fire({
 					type: "success",
 					title: "La venta ha sido editada correctamente",
 					showConfirmButton: true,
 					confirmButtonText: "Cerrar"
-				}).then((result) => {
+				}).then(function(result){
 					if (result.value) { window.location = "ventas"; }
 				});
 			</script>';
@@ -269,129 +329,134 @@ class ControladorVentas{
 	=============================================*/
 	static public function ctrEliminarVenta(){
 
-		if(!isset($_GET["idVenta"])) return;
+		if(isset($_GET["idVenta"])){
 
-		$tabla = "ventas";
-		$idVenta = $_GET["idVenta"];
+			$tabla = "ventas";
+			$item  = "id";
+			$valor = $_GET["idVenta"];
 
-		$traerVenta = ModeloVentas::mdlMostrarVentas($tabla, "id", $idVenta);
-		if(!$traerVenta) return;
+			$traerVenta = ModeloVentas::mdlMostrarVentas($tabla, $item, $valor);
 
-		/*=============================================
-		ACTUALIZAR FECHA ÚLTIMA COMPRA DEL CLIENTE
-		=============================================*/
-		$tablaClientes = "clientes";
+			/*=============================================
+			ACTUALIZAR FECHA ÚLTIMA COMPRA CLIENTE
+			=============================================*/
+			$tablaClientes = "clientes";
+			$itemVentas = null;
+			$valorVentas = null;
 
-		$traerVentasCliente = ModeloVentas::mdlMostrarVentas($tabla, null, null);
-		$guardarFechas = array();
+			$traerVentas = ModeloVentas::mdlMostrarVentas($tabla, $itemVentas, $valorVentas);
 
-		foreach ($traerVentasCliente as $value) {
-			if($value["id_cliente"] == $traerVenta["id_cliente"]){
-				$guardarFechas[] = $value["fecha"];
+			$sumarTotalCompras = array();
+
+			foreach ($traerVentas as $key => $value) {
+				if($value["id_cliente"] == $traerVenta["id_cliente"]){
+					array_push($sumarTotalCompras, $value["productos"]);
+				}
+			}
+
+			$sumarTotalCompras2 = array();
+
+			foreach ($sumarTotalCompras as $key => $value) {
+				$productos = json_decode($value, true);
+				foreach ($productos as $key2 => $value2) {
+					array_push($sumarTotalCompras2, $value2["cantidad"]);
+				}
+			}
+
+			$sumaTotal = array_sum($sumarTotalCompras2);
+			$modeloCompras = ModeloClientes::mdlActualizarCliente($tablaClientes, "compras", $sumaTotal, $traerVenta["id_cliente"]);
+			if($modeloCompras == "ok"){
+				$traerVentas = ModeloVentas::mdlMostrarVentas($tabla, $itemVentas, $valorVentas);
+				$fechaCliente = array();
+
+				foreach ($traerVentas as $key => $value) {
+					if($value["id_cliente"] == $traerVenta["id_cliente"]){
+						array_push($fechaCliente, $value["fecha"]);
+					}
+				}
+
+				if(count($fechaCliente) > 0){
+					$cliente = ModeloClientes::mdlActualizarCliente($tablaClientes, "ultima_compra", end($fechaCliente), $traerVenta["id_cliente"]);
+				}
+			}
+
+			/*=============================================
+			ACTUALIZAR STOCK Y VENTAS DE PRODUCTOS
+			=============================================*/
+			$productos = json_decode($traerVenta["productos"], true);
+
+			foreach ($productos as $key => $value) {
+				$tablaProductos = "productos";
+
+				$item = "id";
+				$valor = $value["id"];
+				$orden = "id";
+
+				$traerProducto = ModeloProductos::mdlMostrarProductos($tablaProductos, $item, $valor, $orden);
+
+				$item1a = "ventas";
+				$valor1a = (int)$traerProducto["ventas"] - $value["cantidad"];
+				$nuevoProductoVentas = ModeloProductos::mdlActualizarProducto($tablaProductos, $item1a, $valor1a, $item, $valor);
+
+				$item2a = "stock";
+				$valor2a = $value["cantidad"] + (int)$traerProducto["stock"];
+				$nuevoProductoStock = ModeloProductos::mdlActualizarProducto($tablaProductos, $item2a, $valor2a, $item, $valor);
+			}
+
+			$respuesta = ModeloVentas::mdlBorrarVenta($tabla, $_GET["idVenta"]);
+
+			if($respuesta == "ok"){
+				echo'<script>
+					Swal.fire({
+						type: "success",
+						title: "La venta ha sido borrada correctamente",
+						showConfirmButton: true,
+						confirmButtonText: "Cerrar"
+					}).then(function(result){
+						if (result.value) { window.location = "ventas"; }
+					});
+				</script>';
 			}
 		}
-
-		if(count($guardarFechas) > 1){
-			$fechaSet = ($traerVenta["fecha"] > $guardarFechas[count($guardarFechas)-2])
-				? $guardarFechas[count($guardarFechas)-2]
-				: $guardarFechas[count($guardarFechas)-1];
-			ModeloClientes::mdlActualizarCliente($tablaClientes, "ultima_compra", $fechaSet, $traerVenta["id_cliente"]);
-		}else{
-			ModeloClientes::mdlActualizarCliente($tablaClientes, "ultima_compra", "0000-00-00 00:00:00", $traerVenta["id_cliente"]);
-		}
-
-		/*=============================================
-		REVERTIR PRODUCTOS (ventas y stock)
-		=============================================*/
-		$productos = json_decode($traerVenta["productos"], true);
-		$totalProductosComprados = array();
-
-		foreach ($productos as $value) {
-
-			$idProducto = (int)$value["id"];
-			$cant       = (int)$value["cantidad"];
-			$totalProductosComprados[] = $cant;
-
-			$tablaProductos = "productos";
-			$prod = ModeloProductos::mdlMostrarProductos($tablaProductos, "id", $idProducto, "id");
-			if(!$prod) continue;
-
-			/* Ventas = ventas actuales - cantidad */
-			$nuevasVentas = max(0, (int)$prod["ventas"] - $cant);
-			ModeloProductos::mdlActualizarProducto($tablaProductos, "ventas", $nuevasVentas, "id", $idProducto);
-
-			/* Stock = stock actual + cantidad */
-			$nuevoStock = (int)$prod["stock"] + $cant;
-			ModeloProductos::mdlActualizarProducto($tablaProductos, "stock", $nuevoStock, "id", $idProducto);
-		}
-
-		/*=============================================
-		RESTAR COMPRAS AL CLIENTE
-		=============================================*/
-		$cliente = ModeloClientes::mdlMostrarClientes($tablaClientes, "id", $traerVenta["id_cliente"]);
-		$comprasPrev = $cliente ? (int)$cliente["compras"] : 0;
-		$comprasNueva = $comprasPrev - array_sum($totalProductosComprados);
-		if($comprasNueva < 0) $comprasNueva = 0;
-		ModeloClientes::mdlActualizarCliente($tablaClientes, "compras", $comprasNueva, $traerVenta["id_cliente"]);
-
-		/*=============================================
-		ELIMINAR VENTA
-		=============================================*/
-		$respuesta = ModeloVentas::mdlEliminarVenta($tabla, $idVenta);
-
-		if($respuesta == "ok"){
-			echo'<script>
-				swal({
-					type: "success",
-					title: "La venta ha sido borrada correctamente",
-					showConfirmButton: true,
-					confirmButtonText: "Cerrar"
-				}).then(function(result){
-					if (result.value) { window.location = "ventas"; }
-				});
-			</script>';
-		}
 	}
-
+	
 	/*=============================================
 	RANGO FECHAS
-	=============================================*/
+	=============================================*/	
 	static public function ctrRangoFechasVentas($fechaInicial, $fechaFinal){
-		$tabla = "ventas";
-		$respuesta = ModeloVentas::mdlRangoFechasVentas($tabla, $fechaInicial, $fechaFinal);
-		return $respuesta;
-	}
 
+		$tabla = "ventas";
+
+		$respuesta = ModeloVentas::mdlRangoFechasVentas($tabla, $fechaInicial, $fechaFinal);
+
+		return $respuesta;
+		
+	}
 	/*=============================================
-	DESCARGAR EXCEL
+	DESCARGAR REPORTE EXCEL
 	=============================================*/
 	public function ctrDescargarReporte(){
-
-		if(!isset($_GET["reporte"])) return;
-
-		$tabla = "ventas";
-
-		if(isset($_GET["fechaInicial"]) && isset($_GET["fechaFinal"])){
-			$ventas = ModeloVentas::mdlRangoFechasVentas($tabla, $_GET["fechaInicial"], $_GET["fechaFinal"]);
-		}else{
-			$ventas = ModeloVentas::mdlMostrarVentas($tabla, null, null);
-		}
-
-		/* Archivo Excel */
-		$Name = $_GET["reporte"].'.xls';
-
-		header('Expires: 0');
-		header('Cache-control: private');
-		header("Content-type: application/vnd.ms-excel");
-		header("Cache-Control: cache, must-revalidate");
-		header('Content-Description: File Transfer');
-		header('Last-Modified: '.date('D, d M Y H:i:s'));
-		header("Pragma: public");
-		header('Content-Disposition:; filename="'.$Name.'"');
-		header("Content-Transfer-Encoding: binary");
-
-		echo utf8_decode("<table border='0'>
-			<tr>
+		if(isset($_GET["reporte"])){
+			date_default_timezone_set('America/Lima');
+			$fecha = date('Y-m-d');
+			$hora = date('H:i:s');
+			$nombreArchivo = 'Reporte-Ventas-'.$fecha.'-'.$hora.'.xls';
+			header('Content-type: application/vnd.ms-excel');
+			header('Content-Disposition: attachment; filename='.$nombreArchivo);
+			header('Pragma: no-cache');
+			header('Expires: 0');
+			
+			$tabla = "ventas";
+			if(isset($_GET["fechaInicial"]) && isset($_GET["fechaFinal"])){
+				$ventas = ModeloVentas::mdlRangoFechasVentas($tabla, $_GET["fechaInicial"], $_GET["fechaFinal"]);
+			}else{
+				$item = null;
+				$valor = null;
+				$ventas = ModeloVentas::mdlMostrarVentas($tabla, $item, $valor);
+			}
+			
+			echo utf8_decode("<table border='1'>
+				<tr>
 				<td style='font-weight:bold; border:1px solid #eee;'>CÓDIGO</td>
 				<td style='font-weight:bold; border:1px solid #eee;'>CLIENTE</td>
 				<td style='font-weight:bold; border:1px solid #eee;'>VENDEDOR</td>
@@ -400,7 +465,7 @@ class ControladorVentas{
 				<td style='font-weight:bold; border:1px solid #eee;'>IMPUESTO</td>
 				<td style='font-weight:bold; border:1px solid #eee;'>NETO</td>
 				<td style='font-weight:bold; border:1px solid #eee;'>TOTAL</td>
-				<td style='font-weight:bold; border:1px solid #eee;'>METODO DE PAGO</td>
+				<td style='font-weight:bold; border:1px solid #eee;'>MÉTODO DE PAGO</td>
 				<td style='font-weight:bold; border:1px solid #eee;'>FECHA</td>
 			</tr>");
 
@@ -427,19 +492,11 @@ class ControladorVentas{
 				<td style='border:1px solid #eee;'>$ ".number_format($item["total"],2)."</td>
 				<td style='border:1px solid #eee;'>".$item["metodo_pago"]."</td>
 				<td style='border:1px solid #eee;'>".substr($item["fecha"],0,10)."</td>
-			</tr>");
+				</tr>");
 		}
 
 		echo "</table>";
+		
+		}
 	}
-
-	/*=============================================
-	SUMA TOTAL VENTAS
-	=============================================*/
-	static public function ctrSumaTotalVentas(){
-		$tabla = "ventas";
-		$respuesta = ModeloVentas::mdlSumaTotalVentas($tabla);
-		return $respuesta;
-	}
-
 }
